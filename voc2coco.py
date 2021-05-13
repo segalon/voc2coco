@@ -42,7 +42,8 @@ def get_image_info(annotation_root, extract_num_from_imgid=True):
     img_name = os.path.basename(filename)
     img_id = os.path.splitext(img_name)[0]
     if extract_num_from_imgid and isinstance(img_id, str):
-        img_id = int(re.findall(r'\d+', img_id)[0])
+        #img_id = int(re.findall(r'\d+', img_id)[0])
+        img_id  = int(img_id.split("_")[0] + img_id.split("_")[1])
 
     size = annotation_root.find('size')
     width = int(size.findtext('width'))
@@ -130,9 +131,10 @@ def main():
                         help='path to label list.')
     parser.add_argument('--output', type=str, default='output.json', help='path to output json file')
     parser.add_argument('--ext', type=str, default='', help='additional extension of annotation file')
-    parser.add_argument('--extract_num_from_imgid', action="store_true",
+    parser.add_argument('--extract_num_from_imgid', default=True, action="store_true",
                         help='Extract image number from the image filename')
     args = parser.parse_args()
+    args.extract_num_from_imgid = True
     label2id = get_label2id(labels_path=args.labels)
     ann_paths = get_annpaths(
         ann_dir_path=args.ann_dir,
